@@ -20,10 +20,9 @@ import rego.v1
 deny contains msg if {
   bucket := input.configuration.root_module.resources[_]
   bucket.type == "aws_s3_bucket"
-  bucket.expressions.tags.constant_value.DataClass == "phi"
   not has_kms_encryption(bucket.name)
   msg := sprintf(
-    "[CC6.1][GAP-01] aws_s3_bucket.%s is tagged DataClass=phi but has no KMS encryption configuration. Add aws_s3_bucket_server_side_encryption_configuration with sse_algorithm=aws:kms.",
+    "[CC6.1][GAP-01] aws_s3_bucket.%s has no KMS encryption configuration. Add aws_s3_bucket_server_side_encryption_configuration with sse_algorithm=aws:kms.",
     [bucket.name]
   )
 }
