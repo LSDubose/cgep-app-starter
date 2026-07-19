@@ -1,0 +1,76 @@
+{
+  "component-definition": {
+    "uuid": "d2786625-6bde-428b-9701-4e035a0148fb",
+    "metadata": {
+      "title": "Acme Health Patient Intake API — SOC 2 GRC Baseline",
+      "last-modified": "2026-07-19T00:00:00.000000-04:00",
+      "version": "1.0.0",
+      "oscal-version": "1.2.1",
+      "parties": [
+        {
+          "uuid": "501b8233-99f2-44c0-bc16-e551b6df02e0",
+          "type": "organization",
+          "name": "LaMeisha DuBose"
+        }
+      ]
+    },
+    "components": [
+      {
+        "uuid": "d9f95e78-578d-462d-ac3d-0e74daa28434",
+        "type": "software",
+        "title": "acme-health-intake",
+        "description": "Patient Intake API built on AWS Lambda, API Gateway, DynamoDB, and S3. Processes PHI. GRC baseline wraps the starter with KMS encryption, TLS enforcement, versioning, least-privilege IAM, and API access logging.",
+        "purpose": "Accept and store patient intake submissions for Acme Health telehealth platform.",
+        "responsible-roles": [
+          { "role-id": "provider", "party-uuids": ["501b8233-99f2-44c0-bc16-e551b6df02e0"] }
+        ],
+        "control-implementations": [
+          {
+            "uuid": "9dff75c2-3c68-462f-b6fc-f2d6f78ddcb2",
+            "source": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+            "description": "SOC 2 Trust Services Criteria implemented by this system. Mapped to NIST 800-53 Rev 5 as the authoritative catalog.",
+            "implemented-requirements": [
+              {
+                "uuid": "42507ad6-f9ba-431e-8c6a-e0237af95a3d",
+                "control-id": "sc-28",
+                "description": "GAP-01 and GAP-02 closed. S3 uploads bucket encrypted with customer-managed KMS key via aws_s3_bucket_server_side_encryption_configuration with sse_algorithm=aws:kms. DynamoDB submissions table encrypted with same CMK via server_side_encryption block. Key rotation enabled. Maps to SOC 2 CC6.1.",
+                "props": [
+                  { "name": "implementation-status", "value": "implemented" },
+                  { "name": "soc2-control", "value": "CC6.1" },
+                  { "name": "gap-closed", "value": "GAP-01, GAP-02" },
+                  { "name": "terraform-resource", "value": "aws_s3_bucket_server_side_encryption_configuration.uploads" },
+                  { "name": "terraform-resource", "value": "aws_kms_key.phi" }
+                ],
+                "links": [
+                  {
+                    "rel": "evidence",
+                    "href": "s3://acme-health-intake-evidence-ced0644b/runs/29695664856/evidence-29695664856-51ae8de9f036d69e464ae3f54cf9a9aa3e7117f9.tar.gz",
+                    "text": "Signed pipeline evidence bundle — plan.json and conftest-results.json."
+                  }
+                ]
+              },
+              {
+                "uuid": "1317eb87-be65-441c-a3b8-2cbecd4fe040",
+                "control-id": "sc-8",
+                "description": "GAP-03 closed. S3 uploads bucket policy denies all requests where aws:SecureTransport is false. PHI cannot be transmitted over non-TLS connections. Maps to SOC 2 CC6.7.",
+                "props": [
+                  { "name": "implementation-status", "value": "implemented" },
+                  { "name": "soc2-control", "value": "CC6.7" },
+                  { "name": "gap-closed", "value": "GAP-03" },
+                  { "name": "terraform-resource", "value": "aws_s3_bucket_policy.uploads_tls" }
+                ],
+                "links": [
+                  {
+                    "rel": "evidence",
+                    "href": "s3://acme-health-intake-evidence-ced0144b/runs/29695664856/evidence-29695664856-51ae8de9f036d69e464ae3f54cf9a9aa3e7117f9.tar.gz",
+                    "text": "Signed pipeline evidence bundle."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
