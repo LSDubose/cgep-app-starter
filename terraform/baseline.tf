@@ -31,17 +31,7 @@ resource "aws_kms_alias" "phi" {
 # GAP-01: S3 SSE-KMS with customer CMK (CC6.1)
 ######################################################################
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "uploads" {
-  bucket = aws_s3_bucket.uploads.id
 
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm     = "aws:kms"
-      kms_master_key_id = aws_kms_key.phi.arn
-    }
-    bucket_key_enabled = true
-  }
-}
 
 ######################################################################
 # GAP-02: DynamoDB SSE with customer CMK (CC6.1)
